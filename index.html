@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>OrderSmartAI</title>
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #f4f4f4;
+    }
+
+    #chatButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+
+      width: 60px;
+      height: 60px;
+
+      border-radius: 50%;
+      border: none;
+
+      background: black;
+      color: white;
+
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    #chatBox {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+
+      width: 320px;
+      height: 420px;
+
+      background: white;
+
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+
+      display: none;
+      flex-direction: column;
+
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #header {
+      background: black;
+      color: white;
+      padding: 10px;
+    }
+
+    #messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .msg {
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 8px;
+      max-width: 80%;
+    }
+
+    .user {
+      background: #007bff;
+      color: white;
+      margin-left: auto;
+    }
+
+    .bot {
+      background: #eee;
+    }
+
+    #inputArea {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    #input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+    }
+
+    button.send {
+      background: black;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<button id="chatButton" onclick="toggleChat()">💬</button>
+
+<div id="chatBox">
+
+  <div id="header">OrderSmartAI</div>
+
+  <div id="messages"></div>
+
+  <div id="inputArea">
+
+    <input id="input" placeholder="Type message..." />
+
+    <button class="send" onclick="sendMessage()">Send</button>
+
+  </div>
+
+</div>
+
+<script>
+
+let open = false;
+
+function toggleChat() {
+  open = !open;
+  document.getElementById("chatBox").style.display =
+    open ? "flex" : "none";
+}
+
+async function sendMessage() {
+
+  const input = document.getElementById("input");
+  const message = input.value;
+
+  if (!message) return;
+
+  const messages = document.getElementById("messages");
+
+  // user message
+  messages.innerHTML += `<div class="msg user">${message}</div>`;
+
+  input.value = "";
+
+  // backend call
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message })
+  });
+
+  const data = await res.json();
+
+  // bot message
+  messages.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+
+  messages.scrollTop = messages.scrollHeight;
+}
+
+</script>
+
+</body>
+</html>
