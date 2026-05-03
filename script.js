@@ -1,37 +1,25 @@
-function sendMessage(option) {
+async function sendMessage() {
 
-  const chatBody =
-    document.getElementById("chatBody");
+  const input = document.getElementById("input");
+  const message = input.value;
 
-  const userMessage =
-    document.createElement("p");
+  if (!message) return;
 
-  userMessage.innerHTML =
-    "You: " + option;
+  const chatBox = document.getElementById("chatBox");
 
-  userMessage.style.textAlign = "right";
+  chatBox.innerHTML += `<p><b>You:</b> ${message}</p>`;
 
-  chatBody.appendChild(userMessage);
+  input.value = "";
 
-  const botReply =
-    document.createElement("p");
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ message })
+  });
 
-  botReply.className = "bot";
+  const data = await res.json();
 
-  if(option === "Emergency") {
-
-    botReply.innerHTML =
-      'Book here:<br><a href="https://calendly.com/ordersmartai-support/30min" target="_blank">Open Booking</a>';
-
-  }
-
-  if(option === "Book Consultation") {
-
-    botReply.innerHTML =
-      "Great 😊 We offer free Other consultations.";
-
-  }
-
-  chatBody.appendChild(botReply);
-
+  chatBox.innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
 }

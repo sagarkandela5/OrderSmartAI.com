@@ -4,8 +4,6 @@ export default function handler(req, res) {
 
   let reply = "";
 
-  // Simple chatbot logic
-
   if (message.includes("hello")) {
     reply = "Hello 👋 Welcome to OrderSmartAI";
   }
@@ -15,15 +13,15 @@ export default function handler(req, res) {
   }
 
   else if (message.includes("book")) {
-    reply = "Great 👍 Please share your name and contact.";
+    reply = "Sure 👍 Please share your details.";
   }
 
   else if (message.includes("help")) {
-    reply = "I can help with bookings, pricing, and automation.";
+    reply = "I can help with automation, booking, and AI systems.";
   }
 
   else {
-    reply = "Thanks for your message. We will contact you shortly.";
+    reply = "Thanks for your message. We will get back to you.";
   }
 
   res.status(200).json({ reply });
