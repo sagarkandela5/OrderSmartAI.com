@@ -1,6 +1,6 @@
 let sessions = {};
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
 
   const message = req.body.message;
   const userId = "user";
@@ -38,6 +38,22 @@ export default function handler(req, res) {
   // GET TIME
   else if (session.step === 2) {
 
+    // SEND DATA TO GOOGLE SHEETS
+    await fetch("https://script.google.com/macros/s/AKfycbxowQoDqnmen9zn5ZqZh6gDAHrAoGSFhLtT5RTCKU4K2s0aPx7Lm3peVFdA1mOXrKqhdg/exec", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        name: session.name,
+        time: message
+      })
+
+    });
+
     reply =
       `✅ Booking Confirmed!\n\n` +
       `Name: ${session.name}\n` +
@@ -50,20 +66,16 @@ export default function handler(req, res) {
     };
   }
 
-  // OTHER MESSAGES
+  // HELLO
   else if (message.toLowerCase().includes("hello")) {
 
     reply = "Hello 👋 Welcome to OrderSmartAI";
   }
 
-  else if (message.toLowerCase().includes("price")) {
-
-    reply = "Plans start from £99/month.";
-  }
-
+  // DEFAULT
   else {
 
-    reply = "I can help with booking, pricing, and automation.";
+    reply = "I can help with bookings and automation.";
   }
 
   res.status(200).json({ reply });
